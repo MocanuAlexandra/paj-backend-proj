@@ -29,6 +29,6 @@ public class CustomIdentityStore implements IdentityStore {
     }
 
     private boolean userExists(String username, String password) {
-        return username.equals("test") && password.equals("secret");
+        return username.equals("user1234") && password.equals("secret");
     }
 }
