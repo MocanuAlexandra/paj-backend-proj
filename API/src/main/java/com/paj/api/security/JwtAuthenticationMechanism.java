@@ -20,6 +20,7 @@ import java.io.IOException;
 public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final String LOGIN_URL = "/auth/login";
+    private static final String GUEST_URL = "/resource/guest";
 
     @Inject
     private CustomIdentityStore identityStore;
@@ -32,6 +33,10 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         if (httpServletRequest.getMethod().equals(HttpMethod.OPTIONS)) {
             return httpMessageContext.doNothing();
         }
+
+        // If the user is accessing the guest URL, permit all
+        if (httpServletRequest.getPathInfo().equals(GUEST_URL))
+            return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult("guest"));
 
         // If the user is accessing the login URL, perform authentication using given credentials
         if (httpServletRequest.getPathInfo().equals(LOGIN_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
