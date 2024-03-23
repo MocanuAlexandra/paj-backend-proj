@@ -23,7 +23,7 @@ public class AuthenticationController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login() {
         JsonObject responseJson = Json.createObjectBuilder()
-                .add("username",  securityContext.getCallerPrincipal().getName() )
+                .add("username", securityContext.getCallerPrincipal().getName())
                 .build();
         return Response.ok(responseJson).build();
     }
