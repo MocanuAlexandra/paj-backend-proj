@@ -1,5 +1,6 @@
 package com.paj.api.security;
 
+import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paj.api.models.LoginModel;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,96 +10,88 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticat
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
-import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.HttpMethod;
 
 import java.io.IOException;
 
-import static com.paj.api.utils.Constants.AUTHORIZATION_HEADER;
-import static com.paj.api.utils.Constants.BEARER;
-
 @ApplicationScoped
-public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
+public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
+
+    private static final String LOGIN_URL = "/auth/login";
 
     @Inject
-    private IdentityStoreHandler identityStore;
-
-    @Inject
-    private TokenProvider tokenProvider;
+    private CustomIdentityStore identityStore;
 
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
-        LoginModel loginModel = null;
+    public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest,
+                                                HttpServletResponse httpServletResponse,
+                                                HttpMessageContext httpMessageContext) {
 
+        if (httpServletRequest.getMethod().equals(HttpMethod.OPTIONS)) {
+            return httpMessageContext.doNothing();
+        }
+
+        // If the user is accessing the login URL, perform authentication using given credentials
+        if (httpServletRequest.getPathInfo().equals(LOGIN_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
+            return usernameAndPasswordLogin(httpServletRequest, httpServletResponse, httpMessageContext);
+
+        // For any other case, check if the user has a valid token in the cookie
+        return validateToken(httpServletRequest, httpMessageContext);
+    }
+
+    private AuthenticationStatus usernameAndPasswordLogin(HttpServletRequest httpServletRequest,
+                                                          HttpServletResponse httpServletResponse,
+                                                          HttpMessageContext httpMessageContext) {
+        LoginModel loginModel;
         ObjectMapper objectMapper = new ObjectMapper();
+
+        // Check if the request has a body and deserialize it into a LoginModel object
         try {
-            // Deserialize the JSON request body into a LoginModel object
-            // Check if the request has a body
-            if (request.getInputStream() != null && request.getInputStream().available() > 0) {
-                loginModel = objectMapper.readValue(request.getInputStream(), LoginModel.class);
+            if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0) {
+                loginModel = objectMapper.readValue(httpServletRequest.getInputStream(), LoginModel.class);
+            } else {
+                // If the request body is missing, respond with unauthorized
+                return httpMessageContext.responseUnauthorized();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        // Extract username and password from LoginUser object
-        String username = (loginModel != null && loginModel.getUsername() != null) ? loginModel.getUsername() : null;
-        String password = (loginModel != null && loginModel.getPassword() != null) ? loginModel.getPassword() : null;
-
-
-        // Extract token from the request header
-        String token = extractToken(httpMessageContext);
-
-        if (username != null && password != null) {
-            // If username and password are provided, validate them
-            CredentialValidationResult result = identityStore.validate(new UsernamePasswordCredential(username, password));
-            if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-                // If credentials are valid, create a token and store it in the response header
-                return createToken(result, httpMessageContext);
-            } else {
-                // If credentials are not valid, return unauthorized status
-                return httpMessageContext.responseUnauthorized();
-            }
-        } else if (token != null) {
-            // If token is provided, validate it
-            return validateToken(token, httpMessageContext);
-        } else if (httpMessageContext.isProtected()) {
-            // If resource is protected and no credentials or token provided, return unauthorized status
+        // If the loginModel is null or if username or password are null, respond with unauthorized
+        if (loginModel == null || loginModel.getEmail() == null || loginModel.getPassword() == null) {
             return httpMessageContext.responseUnauthorized();
         }
-        // If there are no credentials and resource is not protected, do nothing
-        return httpMessageContext.doNothing();
+
+        // Extract email and password from LoginModel object
+        String email = loginModel.getEmail();
+        String password = loginModel.getPassword();
+
+        // Validate the email and password using the identity store
+        var validationResult = identityStore.validate(new UsernamePasswordCredential(email, password));
+
+        // If the credentials are invalid, respond with unauthorized
+        if (validationResult == CredentialValidationResult.INVALID_RESULT)
+            return httpMessageContext.responseUnauthorized();
+
+        // Add the JWT token to the response cookie and notify the container about the login
+        String token = JwtTokenProvider.createToken(validationResult.getCallerPrincipal().getName());
+        JwtTokenProvider.addTokenCookie(httpServletResponse, token);
+        return httpMessageContext.notifyContainerAboutLogin(validationResult);
+
     }
 
-    // Create a token and set it in the response header
-    private AuthenticationStatus createToken(CredentialValidationResult result, HttpMessageContext context) {
-        String jwt = tokenProvider.createToken(result.getCallerPrincipal().getName(), result.getCallerGroups());
-        context.getResponse().setHeader(AUTHORIZATION_HEADER, BEARER + jwt);
-        // Notify the container about successful login
-        return context.notifyContainerAboutLogin(result);
-    }
+    private AuthenticationStatus validateToken(HttpServletRequest httpServletRequest,
+                                               HttpMessageContext httpMessageContext) {
 
-    // Validate the provided token
-    private AuthenticationStatus validateToken(String token, HttpMessageContext context) {
-        if (tokenProvider.validateToken(token)) {
-            // If token is valid, extract credentials and notify container about successful login
-            JWTCredential credential = tokenProvider.getCredential(token);
-            return context.notifyContainerAboutLogin(credential.getPrincipal(), credential.getAuthorities());
+        String token = JwtTokenProvider.getTokenCookieValue(httpServletRequest);
+        if (token == null || !JwtTokenProvider.validateToken(token)) {
+            // Invalid or missing token
+            return httpMessageContext.responseUnauthorized();
         }
-        // If token is invalid, return unauthorized status
-        return context.responseUnauthorized();
-    }
 
-    // Extract token from the request header
-    private String extractToken(HttpMessageContext context) {
-        String authorizationHeader = context.getRequest().getHeader(AUTHORIZATION_HEADER);
-       // remove the Bearer prefix from the token
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
-            String s = authorizationHeader.substring(BEARER.length());
-            return s;
-        }
-        return null;
+        // If the token is valid, notify the container about the login
+        return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(JWT.decode(token).getSubject()));
     }
-
 }
