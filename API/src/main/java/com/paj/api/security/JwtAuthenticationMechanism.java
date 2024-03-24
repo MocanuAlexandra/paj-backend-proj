@@ -1,8 +1,12 @@
 package com.paj.api.security;
 
-import com.auth0.jwt.JWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paj.api.models.LoginModel;
+
+import com.auth0.jwt.JWT;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationStatus;
@@ -23,19 +27,15 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
     private static final String GUEST_URL = "/resource/guest";
 
     @Inject
-    private CustomIdentityStore identityStore;
+    CustomIdentityStore identityStore;
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest,
                                                 HttpServletResponse httpServletResponse,
                                                 HttpMessageContext httpMessageContext) {
 
-        if (httpServletRequest.getMethod().equals(HttpMethod.OPTIONS)) {
-            return httpMessageContext.doNothing();
-        }
-
         // If the user is accessing the guest URL, permit all
-        if (httpServletRequest.getPathInfo().equals(GUEST_URL))
+        if (httpServletRequest.getPathInfo().equals(GUEST_URL) && httpServletRequest.getMethod().equals(HttpMethod.GET))
             return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult("guest"));
 
         // If the user is accessing the login URL, perform authentication using given credentials
@@ -51,11 +51,17 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
                                                           HttpMessageContext httpMessageContext) {
         LoginModel loginModel;
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // ignore unrecognized properties
 
         // Check if the request has a body and deserialize it into a LoginModel object
         try {
-            if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0) {
+            // Check if the request has a body and deserialize it into a LoginModel object
+            if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0
+            ) {
                 loginModel = objectMapper.readValue(httpServletRequest.getInputStream(), LoginModel.class);
+            } // Check if the request has a reader and deserialize it into a LoginModel object, useful for testing
+            else if (httpServletRequest.getReader() != null && httpServletRequest.getReader().ready()) {
+                loginModel = objectMapper.readValue(httpServletRequest.getReader(), LoginModel.class);
             } else {
                 // If the request body is missing, respond with unauthorized
                 return httpMessageContext.responseUnauthorized();
@@ -64,7 +70,7 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
             throw new RuntimeException(e);
         }
 
-        // If the loginModel is null or if username or password are null, respond with unauthorized
+        // If the request body was not in the correct format, respond with unauthorized
         if (loginModel == null || loginModel.getEmail() == null || loginModel.getPassword() == null) {
             return httpMessageContext.responseUnauthorized();
         }
