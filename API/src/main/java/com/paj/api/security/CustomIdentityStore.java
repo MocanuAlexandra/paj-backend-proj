@@ -13,9 +13,8 @@ public class CustomIdentityStore implements IdentityStore {
     HashMap<String, UsernamePasswordCredential> validUsers = new HashMap<>();
 
     {
+        // do not delete this, is used by the tests
         validUsers.put("user@user.com", new UsernamePasswordCredential("user@user.com", "user"));
-        validUsers.put("test@test.com", new UsernamePasswordCredential("test@test.com", "test"));
-        validUsers.put("user2@user.co", new UsernamePasswordCredential("user2@user.co", "user2"));
     }
 
     public CredentialValidationResult validate(UsernamePasswordCredential credential) {

@@ -7,6 +7,7 @@ import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.paj.api.models.RegisterModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationStatus;
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final String LOGIN_URL = "/auth/login";
+    private static final String REGISTER_URL = "/auth/register";
     private static final String GUEST_URL = "/resource/guest";
 
     @Inject
@@ -37,6 +39,11 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         // If the user is accessing the guest URL, permit all
         if (httpServletRequest.getPathInfo().equals(GUEST_URL) && httpServletRequest.getMethod().equals(HttpMethod.GET))
             return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult("guest"));
+
+        // If the user is accessing the register URL, perform registration and create jwt token
+       // TODO: Implement registration
+        if (httpServletRequest.getPathInfo().equals(REGISTER_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
+            return register(httpServletRequest, httpServletResponse, httpMessageContext);
 
         // If the user is accessing the login URL, perform authentication using given credentials
         if (httpServletRequest.getPathInfo().equals(LOGIN_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
@@ -91,6 +98,36 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         JwtTokenProvider.addTokenCookie(httpServletResponse, token);
         return httpMessageContext.notifyContainerAboutLogin(validationResult);
 
+    }
+
+
+    // TODO: Implement registration
+    private AuthenticationStatus register(HttpServletRequest httpServletRequest,
+                                          HttpServletResponse httpServletResponse,
+                                          HttpMessageContext httpMessageContext) {
+
+        RegisterModel registerModel;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // ignore unrecognized properties
+
+        // Check if the request has a body and deserialize it into a RegisterModel object
+        try {
+            // Check if the request has a body and deserialize it into a RegisterModel object
+            if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0
+            ) {
+                registerModel = objectMapper.readValue(httpServletRequest.getInputStream(), RegisterModel.class);
+            } // Check if the request has a reader and deserialize it into a RegisterModel object, useful for testing
+            else if (httpServletRequest.getReader() != null && httpServletRequest.getReader().ready()) {
+                registerModel = objectMapper.readValue(httpServletRequest.getReader(), RegisterModel.class);
+            } else {
+                // If the request body is missing, respond with unauthorized
+                return httpMessageContext.responseUnauthorized();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(registerModel.getEmail()));
     }
 
     private AuthenticationStatus validateToken(HttpServletRequest httpServletRequest,
