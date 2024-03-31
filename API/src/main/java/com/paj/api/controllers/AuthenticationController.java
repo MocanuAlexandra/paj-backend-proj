@@ -8,10 +8,7 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
 import jakarta.security.enterprise.SecurityContext;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -48,5 +45,16 @@ public class AuthenticationController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // After successful logout, send a response with a message
+    @GET
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout() {
+        JsonObject response = Json.createObjectBuilder()
+                .add("message", "User logged out successfully")
+                .build();
+        return Response.ok(response).build();
     }
 }

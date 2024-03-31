@@ -78,4 +78,12 @@ public class JwtTokenProvider {
         tokenCookie.setMaxAge((int) (JWT_VALIDITY_IN_MILLISECONDS / 1000));
         httpServletResponse.addCookie(tokenCookie);
     }
+
+    public static void removeTokenCookie(HttpServletResponse httpServletResponse) {
+        Cookie tokenCookie = new Cookie(JWT_COOKIE_NAME, "");
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setMaxAge(0);
+        tokenCookie.setPath("/");
+        httpServletResponse.addCookie(tokenCookie);
+    }
 }

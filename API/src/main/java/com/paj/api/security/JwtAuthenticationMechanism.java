@@ -25,6 +25,8 @@ import java.io.IOException;
 public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final String LOGIN_URL = "/auth/login";
+
+    private static final String LOGOUT_URL = "/auth/logout";
     private static final String REGISTER_URL = "/auth/register";
     private static final String GUEST_URL = "/resource/guest";
 
@@ -48,6 +50,12 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         // If the user is accessing the login URL, perform authentication using given credentials
         if (httpServletRequest.getPathInfo().equals(LOGIN_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
             return usernameAndPasswordLogin(httpServletRequest, httpServletResponse, httpMessageContext);
+
+        // If the user is accessing the logout URL, remove the token
+        if (httpServletRequest.getPathInfo().equals(LOGOUT_URL) && httpServletRequest.getMethod().equals(HttpMethod.GET)) {
+            JwtTokenProvider.removeTokenCookie(httpServletResponse);
+            return httpMessageContext.doNothing();
+        }
 
         // For any other case, check if the user has a valid token in the cookie
         return validateToken(httpServletRequest, httpMessageContext);
