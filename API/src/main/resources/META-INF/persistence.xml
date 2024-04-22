@@ -3,7 +3,21 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="default">
-
+    <persistence-unit name="default" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>jdbc/__default</jta-data-source>
+        <class>org.example.api.entities.RoleEntity</class>
+        <class>org.example.api.entities.UserEntity</class>
+        <class>org.example.api.entities.BookEntity</class>
+        <properties>
+            <property name="eclipselink.deploy-on-startup" value="true"/>
+            <property name="eclipselink.logging.level" value="INFO"/>
+            <property name="eclipselink.logging.level.sql" value="CONFIG"/>
+            <property name="eclipselink.jdbc.fetch-size" value="1000"/>
+            <property name="eclipselink.jdbc.cache-statements" value="true"/>
+            <property name="eclipselink.persistence-context.flush-mode" value="commit"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
     </persistence-unit>
 </persistence>
