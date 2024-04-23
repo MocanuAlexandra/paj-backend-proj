@@ -11,7 +11,7 @@
         <port-number>5432</port-number>
         <database-name>paj</database-name>
         <user>postgres</user>
-        <password>admin</password>
+        <password>1q2w3e</password>
         <property>
             <name>fish.payara.slow-query-threshold-in-seconds</name>
             <value>5</value>
