@@ -1,6 +1,6 @@
-package org.example.api.dao;
+package com.paj.api.dao;
 
-import org.example.api.entities.BookEntity;
+import com.paj.api.entities.BookEntity;
 
 import java.util.List;
 

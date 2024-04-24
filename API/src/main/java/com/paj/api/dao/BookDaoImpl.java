@@ -1,10 +1,11 @@
-package org.example.api.dao;
+package com.paj.api.dao;
+
+import com.paj.api.entities.BookEntity;
+import com.paj.api.entities.UserEntity;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.example.api.entities.BookEntity;
-import org.example.api.entities.UserEntity;
 
 import java.util.List;
 

@@ -45,7 +45,7 @@ public class JwtAuthenticationMechanismTest {
         when(httpMessageContext.notifyContainerAboutLogin(any())).thenReturn(authorizedStatus);
 
         // Set the identity store for the JwtAuthenticationMechanism
-        jwtAuthMechanism.identityStore = new CustomIdentityStore();
+        jwtAuthMechanism.identityStore = new MockupIdentityStore();
     }
 
     @Test

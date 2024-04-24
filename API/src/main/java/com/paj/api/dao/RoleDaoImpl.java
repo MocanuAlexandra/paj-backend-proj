@@ -1,9 +1,10 @@
-package org.example.api.dao;
+package com.paj.api.dao;
+
+import com.paj.api.entities.RoleEntity;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.example.api.entities.RoleEntity;
 
 import java.util.List;
 

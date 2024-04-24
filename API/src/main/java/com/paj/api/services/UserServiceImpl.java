@@ -1,9 +1,10 @@
-package org.example.api.services;
+package com.paj.api.services;
+
+import com.paj.api.dao.UserDao;
+import com.paj.api.entities.UserEntity;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
-import org.example.api.dao.UserDao;
-import org.example.api.entities.UserEntity;
 
 import java.util.List;
 
@@ -13,8 +14,13 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public UserEntity getUser(int id) {
+    public UserEntity getUserById(int id) {
         return userDao.find(id);
+    }
+
+    @Override
+    public UserEntity getUserByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
     @Override

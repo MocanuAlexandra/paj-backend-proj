@@ -1,13 +1,15 @@
-package org.example.api.services;
+package com.paj.api.services;
 
 import jakarta.ejb.Local;
-import org.example.api.entities.UserEntity;
+import com.paj.api.entities.UserEntity;
 
 import java.util.List;
 
 @Local
 public interface UserService {
-    UserEntity getUser(int id);
+    UserEntity getUserById(int id);
+
+    UserEntity getUserByEmail(String email);
 
     List<UserEntity> getAllUsers();
 

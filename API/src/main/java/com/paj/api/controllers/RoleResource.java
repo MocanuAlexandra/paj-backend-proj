@@ -1,10 +1,11 @@
-package com.paj.api.api;
+package com.paj.api.controllers;
+
+import com.paj.api.entities.RoleEntity;
+import com.paj.api.services.RoleService;
 
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import com.paj.api.entities.RoleEntity;
-import com.paj.api.services.RoleService;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class RoleResource {
     @GET
     @Path("/{id}")
     public RoleEntity getRole(@PathParam("id") int id) {
-        return roleService.getRole(id);
+        return roleService.getRoleById(id);
     }
 
     @POST

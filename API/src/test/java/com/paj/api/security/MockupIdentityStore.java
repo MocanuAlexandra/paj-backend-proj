@@ -4,14 +4,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
-import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 
 import java.util.HashMap;
-import java.util.Set;
 
 @ApplicationScoped
-public class CustomIdentityStore implements IdentityStoreHandler {
+public class MockupIdentityStore implements IdentityStoreHandler {
     HashMap<String, UsernamePasswordCredential> validUsers = new HashMap<>();
 
     {

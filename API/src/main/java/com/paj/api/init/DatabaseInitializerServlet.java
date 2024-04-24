@@ -1,16 +1,18 @@
-package org.example.api.init;
+package com.paj.api.init;
+
+import com.paj.api.entities.RoleEntity;
+import com.paj.api.entities.BookEntity;
+import com.paj.api.entities.UserEntity;
+import com.paj.api.services.BookService;
+import com.paj.api.services.RoleService;
+import com.paj.api.services.UserService;
 
 import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
+import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
-import org.example.api.entities.BookEntity;
-import org.example.api.entities.RoleEntity;
-import org.example.api.entities.UserEntity;
-import org.example.api.services.BookService;
-import org.example.api.services.RoleService;
-import org.example.api.services.UserService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +28,9 @@ public class DatabaseInitializerServlet implements ServletContextListener {
 
     @EJB
     private BookService bookService;
+
+    @Inject
+    private Pbkdf2PasswordHash hasher;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -84,7 +89,7 @@ public class DatabaseInitializerServlet implements ServletContextListener {
         if (!found) {
             UserEntity newUser = new UserEntity();
             newUser.setEmail(email);
-            newUser.setHashedPassword(hashedPassword);
+            newUser.setHashedPassword(hasher.generate(hashedPassword.toCharArray()));
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
             newUser.setRole(role);

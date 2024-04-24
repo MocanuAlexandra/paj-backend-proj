@@ -12,7 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 
 @Path("/resource")
-public class MockupResource {
+public class HelloResource {
 
     @Inject
     SecurityContext securityContext;

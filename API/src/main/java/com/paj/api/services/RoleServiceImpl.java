@@ -1,9 +1,10 @@
-package org.example.api.services;
+package com.paj.api.services;
+
+import com.paj.api.dao.RoleDao;
+import com.paj.api.entities.RoleEntity;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
-import org.example.api.dao.RoleDao;
-import org.example.api.entities.RoleEntity;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class RoleServiceImpl implements RoleService {
     private RoleDao roleDao;
 
     @Override
-    public RoleEntity getRole(int id) {
+    public RoleEntity getRoleById(int id) {
         return roleDao.find(id);
     }
 

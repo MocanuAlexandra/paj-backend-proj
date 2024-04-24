@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,14 +19,17 @@ public class JwtTokenProvider {
     private static final String JWT_SECRET_FILE_LOCATION = "/jwt.secret";
     private static final String JWT_COOKIE_NAME = "Jwt-Token";
     private static final String JWT_ISSUER = "Payara-Server";
+    public static final String JWT_ROLES_CLAIM = "roles";
+    private static final String JWT_SUBJECT = "sub";
     private static final long JWT_VALIDITY_IN_MILLISECONDS = (10 * 60 * 1000); // 10 minutes
 
-    public static String createToken(String subject) {
+    public static String createToken(CredentialValidationResult validationResult) {
         Algorithm algorithm = Algorithm.HMAC256(getKeyString());
         long expiration = System.currentTimeMillis() + JWT_VALIDITY_IN_MILLISECONDS;
         return JWT.create()
                 .withIssuer(JWT_ISSUER)
-                .withSubject(subject)
+                .withSubject(validationResult.getCallerPrincipal().getName())
+                .withArrayClaim(JWT_ROLES_CLAIM, validationResult.getCallerGroups().toArray(new String[0]))
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(expiration))
                 .sign(algorithm);
@@ -36,6 +40,8 @@ public class JwtTokenProvider {
             Algorithm algorithm = Algorithm.HMAC256(getKeyString());
             JWT.require(algorithm)
                     .withIssuer(JWT_ISSUER)
+                    .withClaimPresence(JWT_SUBJECT)
+                    .withClaimPresence(JWT_ROLES_CLAIM)
                     .build()
                     .verify(token);
             return true;
@@ -76,6 +82,7 @@ public class JwtTokenProvider {
         Cookie tokenCookie = new Cookie(JWT_COOKIE_NAME, token);
         tokenCookie.setHttpOnly(true);
         tokenCookie.setMaxAge((int) (JWT_VALIDITY_IN_MILLISECONDS / 1000));
+        tokenCookie.setPath("/");
         httpServletResponse.addCookie(tokenCookie);
     }
 

@@ -1,4 +1,4 @@
-package com.paj.api.dtos;
+package com.paj.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO{
+public class UserDto {
     private String id;
     private String email;
 }

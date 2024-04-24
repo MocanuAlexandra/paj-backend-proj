@@ -1,9 +1,8 @@
-package org.example.api.entities;
+package com.paj.api.entities;
 
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "profile")

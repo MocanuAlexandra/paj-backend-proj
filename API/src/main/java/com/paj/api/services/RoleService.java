@@ -1,13 +1,13 @@
-package org.example.api.services;
+package com.paj.api.services;
 
 import jakarta.ejb.Local;
-import org.example.api.entities.RoleEntity;
+import com.paj.api.entities.RoleEntity;
 
 import java.util.List;
 
 @Local
 public interface RoleService {
-    RoleEntity getRole(int id);
+    RoleEntity getRoleById(int id);
 
     List<RoleEntity> getAllRoles();
 

@@ -1,13 +1,13 @@
-package org.example.api.services;
+package com.paj.api.services;
 
+import com.paj.api.entities.BookEntity;
 import jakarta.ejb.Local;
-import org.example.api.entities.BookEntity;
 
 import java.util.List;
 
 @Local
 public interface BookService {
-    BookEntity getBook(int id);
+    BookEntity getBookById(int id);
 
     List<BookEntity> getAllBooks();
 

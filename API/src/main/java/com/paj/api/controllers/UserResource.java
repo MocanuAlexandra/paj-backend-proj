@@ -1,10 +1,11 @@
-package com.paj.api.api;
+package com.paj.api.controllers;
+
+import com.paj.api.entities.UserEntity;
+import com.paj.api.services.UserService;
 
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import com.paj.api.entities.UserEntity;
-import com.paj.api.services.UserService;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class UserResource {
     @GET
     @Path("/{id}")
     public UserEntity getUser(@PathParam("id") int id) {
-        return userService.getUser(id);
+        return userService.getUserById(id);
     }
 
     @POST

@@ -1,9 +1,9 @@
-package org.example.api.dao;
+package com.paj.api.dao;
 
-import org.example.api.entities.BookEntity;
-import org.example.api.entities.UserEntity;
-
-import java.util.List;
+import com.paj.api.entities.UserEntity;
 
 public interface UserDao extends GenericDao<UserEntity, Integer> {
+
+    // Find user by email
+    UserEntity findByEmail(String email);
 }

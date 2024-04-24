@@ -1,9 +1,10 @@
-package org.example.api.services;
+package com.paj.api.services;
+
+import com.paj.api.dao.BookDao;
+import com.paj.api.entities.BookEntity;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
-import org.example.api.dao.BookDao;
-import org.example.api.entities.BookEntity;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class BookServiceImpl implements BookService {
     private BookDao bookDao;
 
     @Override
-    public BookEntity getBook(int id) {
+    public BookEntity getBookById(int id) {
         return bookDao.find(id);
     }
 

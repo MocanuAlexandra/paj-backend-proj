@@ -1,9 +1,10 @@
-package com.paj.api.api;
+package com.paj.api.controllers;
 
 import com.paj.api.entities.BookEntity;
+import com.paj.api.services.BookService;
+
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
-import com.paj.api.services.BookService;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BookResource {
     @GET
     @Path("/{id}")
     public BookEntity getBook(@PathParam("id") int id) {
-        return bookService.getBook(id);
+        return bookService.getBookById(id);
     }
 
     @POST
