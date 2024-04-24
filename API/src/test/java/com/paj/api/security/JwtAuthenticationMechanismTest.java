@@ -33,9 +33,9 @@ public class JwtAuthenticationMechanismTest {
     // Created a test JWT token for testing purposes
     // subject: "user@user.com"
     // issuer: "Payara-Server"
-    // issuedAt: 2024-03-24 18:30:00
-    // expiration: 2026-03-24 18:30:00
-    private final String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJQYXlhcmEtU2VydmVyIiwic3ViIjoidXNlckB1c2VyLmNvbSIsImlhdCI6MTcxMTI5ODA1NywiZXhwIjoxNzc0MzY5OTg4fQ.VGWEP8MfgPw7rGLnW57TUHsZ8mnJ7ZFcbKAYq7N9U8o";
+    // issuedAt: 2024-04-24
+    // expiration: 2026-04-25
+    private final String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJQYXlhcmEtU2VydmVyIiwic3ViIjoidXNlckB1c2VyLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNzEzOTYwNjI1LCJleHAiOjE3NzcwNzQ1Mjl9.fE8rQG_X2ozKOV0M9BYKVoUKdZMDI6MDDmUoFfCkAag";
 
     {
         // Mock response behavior for unauthorized status
