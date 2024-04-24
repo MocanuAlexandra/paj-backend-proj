@@ -1,10 +1,10 @@
-package org.example.api.api;
+package com.paj.api.api;
 
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.example.api.entities.UserEntity;
-import org.example.api.services.UserService;
+import com.paj.api.entities.UserEntity;
+import com.paj.api.services.UserService;
 
 import java.util.List;
 

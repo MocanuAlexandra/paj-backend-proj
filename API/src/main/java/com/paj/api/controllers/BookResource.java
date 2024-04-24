@@ -1,9 +1,9 @@
-package org.example.api.api;
+package com.paj.api.api;
 
+import com.paj.api.entities.BookEntity;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
-import org.example.api.entities.BookEntity;
-import org.example.api.services.BookService;
+import com.paj.api.services.BookService;
 
 import java.util.List;
 
