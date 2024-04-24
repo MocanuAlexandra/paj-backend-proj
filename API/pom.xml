@@ -7,17 +7,22 @@
     <groupId>com.paj</groupId>
     <artifactId>ReadingJournal</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ReadingJournal</name>
     <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>19</maven.compiler.source>
         <junit.version>5.9.2</junit.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>4.0.0-RC2</version>
+        </dependency>
+
         <!-- CDI (Contexts and Dependency Injection) API -->
         <dependency>
             <groupId>jakarta.enterprise</groupId>
@@ -27,12 +32,16 @@
         </dependency>
 
         <!-- JPA (Java Persistence API) -->
+
+        <!-- JPA (Java Persistence API) -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
+
+        <!-- JAX-RS (Java API for RESTful Web Services) -->
 
         <!-- JAX-RS (Java API for RESTful Web Services) -->
         <dependency>
@@ -41,6 +50,8 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Servlet API -->
 
         <!-- Servlet API -->
         <dependency>
@@ -83,6 +94,14 @@
             <version>4.0.0-M1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <!-- PostgreSQL JDBC driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <!-- Lombok - used for automatically generating boilerplate code -->
         <dependency>
@@ -123,10 +142,18 @@
             <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <!-- Mockito - used for mocking objects in tests -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
-        <!-- Set the final name of the WAR file to be the artifactId (without version) -->
+        <!-- Set the final title of the WAR file to be the artifactId (without version) -->
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
