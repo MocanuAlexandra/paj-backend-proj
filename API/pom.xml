@@ -32,6 +32,8 @@
         </dependency>
 
         <!-- JPA (Java Persistence API) -->
+
+        <!-- JPA (Java Persistence API) -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
@@ -40,12 +42,16 @@
         </dependency>
 
         <!-- JAX-RS (Java API for RESTful Web Services) -->
+
+        <!-- JAX-RS (Java API for RESTful Web Services) -->
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Servlet API -->
 
         <!-- Servlet API -->
         <dependency>
@@ -126,6 +132,14 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <!-- Mockito - used for mocking objects in tests -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->

@@ -6,9 +6,9 @@
     <persistence-unit name="default" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>jdbc/__default</jta-data-source>
-        <class>org.example.api.entities.RoleEntity</class>
-        <class>org.example.api.entities.UserEntity</class>
-        <class>org.example.api.entities.BookEntity</class>
+        <class>com.paj.api.entities.RoleEntity</class>
+        <class>com.paj.api.entities.UserEntity</class>
+        <class>com.paj.api.entities.BookEntity</class>
         <properties>
             <property name="eclipselink.deploy-on-startup" value="true"/>
             <property name="eclipselink.logging.level" value="INFO"/>
@@ -21,3 +21,4 @@
         </properties>
     </persistence-unit>
 </persistence>
+
