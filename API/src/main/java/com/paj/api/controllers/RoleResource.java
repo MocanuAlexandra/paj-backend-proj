@@ -23,7 +23,7 @@ public class RoleResource {
 
     @GET
     @Path("/{id}")
-    public RoleEntity getRole(@PathParam("id") int id) {
+    public RoleEntity getRoleById(@PathParam("id") int id) {
         return roleService.getRoleById(id);
     }
 

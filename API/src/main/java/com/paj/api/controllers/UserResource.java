@@ -23,7 +23,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    public UserEntity getUser(@PathParam("id") int id) {
+    public UserEntity getUserById(@PathParam("id") int id) {
         return userService.getUserById(id);
     }
 
@@ -34,7 +34,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    public void deletesUser(@PathParam("id") int id) {
+    public void deleteUser(@PathParam("id") int id) {
         userService.deleteUser(id);
     }
 

@@ -20,7 +20,7 @@ public class BookResource {
 
     @GET
     @Path("/{id}")
-    public BookEntity getBook(@PathParam("id") int id) {
+    public BookEntity getBookById(@PathParam("id") int id) {
         return bookService.getBookById(id);
     }
 
