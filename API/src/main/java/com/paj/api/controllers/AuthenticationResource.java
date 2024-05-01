@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/auth")
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthenticationResource {
 
     @Inject
@@ -27,7 +28,6 @@ public class AuthenticationResource {
     // After successful login, send a response with the userDTO
     @POST
     @Path("/login")
-    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("User")
     public String login() {
         var user = userService.getUserByEmail(securityContext.getCallerPrincipal().getName());
@@ -43,7 +43,6 @@ public class AuthenticationResource {
     // After successful logout, send a response with a message
     @GET
     @Path("/logout")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response logout() {
         JsonObject response = Json.createObjectBuilder()
                 .add("logout msg: ", "User logged out successfully")

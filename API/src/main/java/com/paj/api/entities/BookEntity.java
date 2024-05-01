@@ -2,6 +2,8 @@ package com.paj.api.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -28,9 +30,8 @@ public class BookEntity {
     private Integer currentPage;
     @Column(name = "book_total_pages")
     private Integer totalPages;
-    @Temporal(TemporalType.DATE)
     @Column(name = "book_date_started")
-    private Date dateStarted;
+    private LocalDate dateStarted;
     @Column(name = "book_genre")
     private String genre;
 
@@ -96,11 +97,11 @@ public class BookEntity {
         this.totalPages = totalPages;
     }
 
-    public Date getDateStarted() {
+    public LocalDate getDateStarted() {
         return dateStarted;
     }
 
-    public void setDateStarted(Date dateStarted) {
+    public void setDateStarted(LocalDate dateStarted) {
         this.dateStarted = dateStarted;
     }
 

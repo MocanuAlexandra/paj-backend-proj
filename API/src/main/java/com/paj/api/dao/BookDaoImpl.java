@@ -42,11 +42,9 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<BookEntity> getBooksByUserId(int userId) {
-        UserEntity user = entityManager.find(UserEntity.class, userId);
-        if (user != null) {
-            return user.getBooks();
-        }
-        return null;
+        return entityManager.createQuery("SELECT b FROM BookEntity b WHERE b.user.userId = :userId", BookEntity.class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 
     @Override
