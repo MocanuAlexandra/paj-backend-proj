@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.HttpMethod;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static com.paj.api.security.JwtTokenProvider.JWT_ROLES_CLAIM;
@@ -30,7 +31,8 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
     private static final String LOGIN_URL = "/auth/login";
     private static final String LOGOUT_URL = "/auth/logout";
     private static final String REGISTER_URL = "/auth/register";
-    private static final String GUEST_URL = "/resource/guest";
+    private static final String GET_GUEST_BOOKS = "/books/guest";
+    private static final String GET_BOOK_BY_ID_REGEX = "/books/\\d{1,2}";
 
     @Inject
     IdentityStoreHandler identityStore;
@@ -40,9 +42,14 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
                                                 HttpServletResponse httpServletResponse,
                                                 HttpMessageContext httpMessageContext) {
 
-        // If the user is accessing the guest URL, permit all
-        if (httpServletRequest.getPathInfo().equals(GUEST_URL) && httpServletRequest.getMethod().equals(HttpMethod.GET))
-            return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult("guest"));
+        // If the user is accessing the guest books URL, allow access
+        // Also allow access to the book by id URL
+        if ((httpServletRequest.getPathInfo().equals(GET_GUEST_BOOKS)
+                || httpServletRequest.getPathInfo().matches(GET_BOOK_BY_ID_REGEX)
+            )
+           && httpServletRequest.getMethod().equals(HttpMethod.GET))
+                return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(
+                    "Guest", new HashSet<>(Collections.singletonList("Guest"))));
 
         // If the user is accessing the register URL, perform registration and create jwt token
         // TODO: Implement registration
@@ -151,8 +158,8 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
 
         // If the token is valid, notify the container about the login
         return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(
-                    JWT.decode(token).getSubject(),
-                    new HashSet<>(JWT.decode(token).getClaim(JWT_ROLES_CLAIM).asList(String.class)
+                JWT.decode(token).getSubject(),
+                new HashSet<>(JWT.decode(token).getClaim(JWT_ROLES_CLAIM).asList(String.class)
                 )));
     }
 }

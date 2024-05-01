@@ -5,6 +5,7 @@ import com.paj.api.entities.UserEntity;
 import com.paj.api.services.BookService;
 
 import com.paj.api.services.UserService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
@@ -32,6 +33,7 @@ public class BookResource {
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"User", "Guest"})
     public BookEntity getBookById(@PathParam("id") int id) {
         return bookService.getBookById(id);
     }
@@ -44,6 +46,15 @@ public class BookResource {
         // Get the userId of currently logged-in user, then use it to get the books
         UserEntity user = userService.getUserByEmail(securityContext.getCallerPrincipal().getName());
         return bookService.getUserBooks(user.getUserId());
+    }
+
+    @GET
+    @Path("/guest")
+    @RolesAllowed("Guest")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<BookEntity> getBooksForGuest() {
+        // For the guest user, return all books
+        return bookService.getAllBooks();
     }
 
     @POST
