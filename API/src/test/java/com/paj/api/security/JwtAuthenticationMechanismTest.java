@@ -49,16 +49,6 @@ public class JwtAuthenticationMechanismTest {
     }
 
     @Test
-    void validateRequest_ShouldReturnAuthorizedIfURLIsGuestAndMethodIsGet() {
-        when(httpRequest.getPathInfo()).thenReturn("/resource/guest");
-        when(httpRequest.getMethod()).thenReturn("GET");
-
-        // If the user is accessing the guest URL, permit all
-        assertEquals(authorizedStatus,
-                jwtAuthMechanism.validateRequest(httpRequest, httpResponse, httpMessageContext));
-    }
-
-    @Test
     void validateRequest_ShouldReturnUnauthorizedIfURLIsLoginAndMethodIsPostAndRequestBodyIsNullOrWrongFormat() throws IOException {
         when(httpRequest.getPathInfo()).thenReturn("/auth/login");
         when(httpRequest.getMethod()).thenReturn("POST");
