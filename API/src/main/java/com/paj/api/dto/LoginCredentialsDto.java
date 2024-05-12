@@ -1,4 +1,4 @@
-package com.paj.api.models;
+package com.paj.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginCredentials {
+public class LoginCredentialsDto {
     private String email;
     private String password;
 }

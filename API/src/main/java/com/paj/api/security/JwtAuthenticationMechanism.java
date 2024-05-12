@@ -1,6 +1,6 @@
 package com.paj.api.security;
 
-import com.paj.api.models.LoginModel;
+import com.paj.api.dto.LoginCredentialsDto;
 
 import com.auth0.jwt.JWT;
 
@@ -46,15 +46,14 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         // Also allow access to the book by id URL
         if ((httpServletRequest.getPathInfo().equals(GET_GUEST_BOOKS)
                 || httpServletRequest.getPathInfo().matches(GET_BOOK_BY_ID_REGEX)
-            )
-           && httpServletRequest.getMethod().equals(HttpMethod.GET))
-                return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(
+        )
+                && httpServletRequest.getMethod().equals(HttpMethod.GET))
+            return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(
                     "Guest", new HashSet<>(Collections.singletonList("Guest"))));
 
-        // If the user is accessing the register URL, perform registration and create jwt token
-        // TODO: Implement registration
-        //if (httpServletRequest.getPathInfo().equals(REGISTER_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
-        //    return register(httpServletRequest, httpServletResponse, httpMessageContext);
+        // If the user is accessing the register URL, let the request pass through
+        if (httpServletRequest.getPathInfo().equals(REGISTER_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
+            return httpMessageContext.doNothing();
 
         // If the user is accessing the login URL, perform authentication using given credentials
         if (httpServletRequest.getPathInfo().equals(LOGIN_URL) && httpServletRequest.getMethod().equals(HttpMethod.POST))
@@ -73,19 +72,19 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
     private AuthenticationStatus usernameAndPasswordLogin(HttpServletRequest httpServletRequest,
                                                           HttpServletResponse httpServletResponse,
                                                           HttpMessageContext httpMessageContext) {
-        LoginModel loginModel;
+        LoginCredentialsDto loginCredentialsDto;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // ignore unrecognized properties
 
-        // Check if the request has a body and deserialize it into a LoginModel object
+        // Check if the request has a body and deserialize it into a LoginCredentialsDto object
         try {
-            // Check if the request has a body and deserialize it into a LoginModel object
+            // Check if the request has a body and deserialize it into a LoginCredentialsDto object
             if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0
             ) {
-                loginModel = objectMapper.readValue(httpServletRequest.getInputStream(), LoginModel.class);
-            } // Check if the request has a reader and deserialize it into a LoginModel object, useful for testing
+                loginCredentialsDto = objectMapper.readValue(httpServletRequest.getInputStream(), LoginCredentialsDto.class);
+            } // Check if the request has a reader and deserialize it into a LoginCredentialsDto object, useful for testing
             else if (httpServletRequest.getReader() != null && httpServletRequest.getReader().ready()) {
-                loginModel = objectMapper.readValue(httpServletRequest.getReader(), LoginModel.class);
+                loginCredentialsDto = objectMapper.readValue(httpServletRequest.getReader(), LoginCredentialsDto.class);
             } else {
                 // If the request body is missing, respond with unauthorized
                 return httpMessageContext.responseUnauthorized();
@@ -95,13 +94,13 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         }
 
         // If the request body was not in the correct format, respond with unauthorized
-        if (loginModel == null || loginModel.getEmail() == null || loginModel.getPassword() == null) {
+        if (loginCredentialsDto == null || loginCredentialsDto.getEmail() == null || loginCredentialsDto.getPassword() == null) {
             return httpMessageContext.responseUnauthorized();
         }
 
-        // Extract email and password from LoginModel object
-        String email = loginModel.getEmail();
-        String password = loginModel.getPassword();
+        // Extract email and password from LoginCredentialsDto object
+        String email = loginCredentialsDto.getEmail();
+        String password = loginCredentialsDto.getPassword();
 
         // Validate the email and password using the identity store
         var validationResult = identityStore.validate(new UsernamePasswordCredential(email, password));
@@ -116,36 +115,6 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         return httpMessageContext.notifyContainerAboutLogin(validationResult);
 
     }
-
-
-//    // TODO: Implement registration
-//    private AuthenticationStatus register(HttpServletRequest httpServletRequest,
-//                                          HttpServletResponse httpServletResponse,
-//                                          HttpMessageContext httpMessageContext) {
-//
-//        RegisterModel registerModel;
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // ignore unrecognized properties
-//
-//        // Check if the request has a body and deserialize it into a RegisterModel object
-//        try {
-//            // Check if the request has a body and deserialize it into a RegisterModel object
-//            if (httpServletRequest.getInputStream() != null && httpServletRequest.getInputStream().available() > 0
-//            ) {
-//                registerModel = objectMapper.readValue(httpServletRequest.getInputStream(), RegisterModel.class);
-//            } // Check if the request has a reader and deserialize it into a RegisterModel object, useful for testing
-//            else if (httpServletRequest.getReader() != null && httpServletRequest.getReader().ready()) {
-//                registerModel = objectMapper.readValue(httpServletRequest.getReader(), RegisterModel.class);
-//            } else {
-//                // If the request body is missing, respond with unauthorized
-//                return httpMessageContext.responseUnauthorized();
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return httpMessageContext.notifyContainerAboutLogin(new CredentialValidationResult(registerModel.getEmail()));
-//    }
 
     private AuthenticationStatus validateToken(HttpServletRequest httpServletRequest,
                                                HttpMessageContext httpMessageContext) {
