@@ -28,13 +28,16 @@ public class BookServiceImpl implements BookService {
     public BookEntity createBook(BookEntity bookEntity) {
         return bookDao.save(bookEntity);
     }
-
     @Override
-    public void deleteBook(int id) {
-        BookEntity bookEntity = bookDao.find(id);
+    public BookEntity updateBook(BookEntity bookEntity) {
+        return bookDao.update(bookEntity);
+    }
+    @Override
+    public void deleteBook(int bookId) {
+        BookEntity bookEntity = bookDao.find(bookId);
         if (bookEntity != null) {
-            bookDao.delete(bookEntity);
-        }
+        bookDao.deleteById(bookId);
+    }
     }
 
     // Handle books for user

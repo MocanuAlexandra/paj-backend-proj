@@ -34,10 +34,22 @@ public class BookDaoImpl implements BookDao {
         }
         return bookEntity;
     }
+    @Override
+    public BookEntity update(BookEntity bookEntity) {
+        return entityManager.merge(bookEntity);
+    }
 
     @Override
     public void delete(BookEntity bookEntity) {
         entityManager.remove(entityManager.contains(bookEntity) ? bookEntity : entityManager.merge(bookEntity));
+    }
+
+    @Override
+    public void deleteById(int bookId) {
+        BookEntity book = entityManager.find(BookEntity.class, bookId);
+        if (book != null) {
+            entityManager.remove(book);
+        }
     }
 
     @Override

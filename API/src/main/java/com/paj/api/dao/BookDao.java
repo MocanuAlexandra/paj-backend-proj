@@ -10,4 +10,6 @@ public interface BookDao extends GenericDao<BookEntity, Integer> {
     BookEntity addBookToUser(int userId, BookEntity bookEntity);
 
     void removeBookFromUser(int userId, int bookId);
+    void deleteById(int bookId);
+    BookEntity update(BookEntity bookEntity);
 }
