@@ -13,6 +13,8 @@ public interface BookService {
 
     BookEntity createBook(BookEntity book);
 
+    BookEntity updateBook(BookEntity book);
+
     void deleteBook(int id);
 
     //Handle books for user
