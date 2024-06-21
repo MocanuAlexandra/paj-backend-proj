@@ -5,13 +5,13 @@
          version="3.1">
     <display-name>paj</display-name>
     <data-source>
-        <name>jdbc/__default</name>
+        <name>jdbc/paj</name>
         <class-name>org.postgresql.ds.PGSimpleDataSource</class-name>
-        <server-name>localhost</server-name>
+        <server-name>terraform-20240620155127520700000004.ctsgcyi6y3xf.us-east-1.rds.amazonaws.com</server-name>
         <port-number>5432</port-number>
-        <database-name>paj</database-name>
+        <database-name>product_flow</database-name>
         <user>postgres</user>
-        <password>admin</password>
+        <password>1q2w3e4r</password>
         <property>
             <name>fish.payara.slow-query-threshold-in-seconds</name>
             <value>5</value>
