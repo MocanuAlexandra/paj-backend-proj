@@ -32,8 +32,6 @@
         </dependency>
 
         <!-- JPA (Java Persistence API) -->
-
-        <!-- JPA (Java Persistence API) -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
@@ -42,16 +40,12 @@
         </dependency>
 
         <!-- JAX-RS (Java API for RESTful Web Services) -->
-
-        <!-- JAX-RS (Java API for RESTful Web Services) -->
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Servlet API -->
 
         <!-- Servlet API -->
         <dependency>
