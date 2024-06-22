@@ -5,13 +5,30 @@
              version="3.0">
     <persistence-unit name="default" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/paj</jta-data-source>
+        <!-- Uncomment for local deployment-->
+    <jta-data-source>jdbc/__default</jta-data-source>
+
+        <!-- Uncomment for deployment on AWS -->
+<!--        <jta-data-source>jdbc/paj</jta-data-source>-->
+
         <class>com.paj.api.entities.RoleEntity</class>
         <class>com.paj.api.entities.UserEntity</class>
         <class>com.paj.api.entities.BookEntity</class>
         <properties>
+
+            <!-- Uncomment for local deployment-->
+            <property name="eclipselink.deploy-on-startup" value="true"/>
             <property name="eclipselink.logging.level" value="INFO"/>
-            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="eclipselink.logging.level.sql" value="CONFIG"/>
+            <property name="eclipselink.jdbc.fetch-size" value="1000"/>
+            <property name="eclipselink.jdbc.cache-statements" value="true"/>
+            <property name="eclipselink.persistence-context.flush-mode" value="commit"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+
+            <!-- Uncomment for deployment on AWS -->
+<!--            <property name="eclipselink.logging.level" value="INFO"/>-->
+<!--            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>-->
         </properties>
     </persistence-unit>
 </persistence>
