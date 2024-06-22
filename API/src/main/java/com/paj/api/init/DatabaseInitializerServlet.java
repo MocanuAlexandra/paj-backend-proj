@@ -35,11 +35,7 @@ public class DatabaseInitializerServlet implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // Insert initial data here
-        RoleEntity adminRole = createRoleIfNotFound("Admin");
         RoleEntity userRole = createRoleIfNotFound("User");
-
-        UserEntity raluca = createUserIfNotFound("raluca@yahoo.com", "123456", "Raluca", "Muntean", adminRole);
-        UserEntity alexandra = createUserIfNotFound("alexandra@yahoo.com", "123456", "Alexandra", "Mocanu", adminRole);
 
         UserEntity andrei = createUserIfNotFound("andrei@yahoo.com", "123456", "Andrei", "Biro", userRole);
         UserEntity dragos = createUserIfNotFound("dragos@yahoo.com", "123456", "Dragos", "Costache", userRole);
@@ -58,7 +54,6 @@ public class DatabaseInitializerServlet implements ServletContextListener {
         createBook("Gone with the Wind", "Margaret Mitchell", "A sweeping historical romance.", 4, 1037, 4009, LocalDate.of(1936, 6, 30), "historical fiction", dragos);
         createBook("The Hunger Games", "Suzanne Collins", "A dystopian tale of survival.", 5, 374, 374, LocalDate.of(2008, 9, 14), "science fiction", dragos);
         createBook("The Road", "Cormac McCarthy", "A post-apocalyptic journey of a father and son.", 4, 287, 287, LocalDate.of(2006, 9, 26), "dystopian", andrei);
-
     }
 
     @Override
